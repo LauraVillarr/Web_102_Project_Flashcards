@@ -1,0 +1,103 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.flashcard_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #242424;
+  border-radius: 2px;
+  background-color: white;
+  color:#242424;
+  height: 300px;
+  margin-bottom: 4px;
+  /* preserves the animation so that anything on the backface is now the front, so it will appear */
+  transform-style: preserve-3d;
+  transition: 0.4s;
+  perspective: 1000px;
+  /* gets card ready to be flipped once rotate-X is set */
+  transform: rotateX(var(--rotate-X, 0));
+}
+
+/* when the flip class is added, set the variable so the card can flip */
+.flashcard_container.flip {
+  --rotate-X: 180deg;
+}
+
+.flashcard_container.commonPhrases {
+  background-color:rgba(127, 255, 200, 0.8);
+}
+
+.flashcard_container.food {
+  background-color:rgba(252, 156, 149, 0.8);
+}
+
+.flashcard_container.verb {
+  background-color:rgba(149, 216, 252, 0.8);
+}
+
+.flashcard_container:hover {
+  box-shadow: 0px 0px 5px #242424;
+  transition: 0.25s;
+}
+
+
+.flashcard_front, .flashcard_back {
+  position: absolute;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* content on back of card is flipped 180 degrees so that when we rotate it will show properly 
+by flipping it to the back, this content is set as the backface*/
+.flashcard_back {
+  transform: rotateX(180deg);
+}
+
+.card_image {
+  display: flex;
+  width: 150px;
+  border-radius: 5px;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-image: url("./src/assets/philippines-flag.jpg");
+    background-size: cover;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}

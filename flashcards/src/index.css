@@ -72,6 +72,33 @@ by flipping it to the back, this content is set as the backface*/
   border-radius: 5px;
 }
 
+.input-container {
+  display: flex;
+  justify-content: center;
+  column-gap: 10px;
+  height: 50px;
+  align-items: center;
+  background-color:rgba(252, 156, 149, 0.3)
+}
+
+.textbox {
+  width: 40%;
+  font-family: montserrat, arial, verdana;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+.feedback {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.button-row {
+  display: flex;
+  column-gap: 10px;
+  justify-content: center;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -89,6 +116,10 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+#fade {
+  color: rgb(223, 222, 222);
 }
 
 @media (prefers-color-scheme: light) {

@@ -1,19 +1,100 @@
 import './App.css';
 import { useState } from 'react';
 import Flashcard from './components/flashcard';
+import AnswerForm from './components/answerForm';
 
 const App = () => {
 
   const [questionNum, setQuestionNum] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
 
   const [isFlipped, setFlipFlashcard] = useState(false);
+  const [rightBtnStatus, setRightBtnStatus] = useState('');
+  const [leftBtnStatus, setLeftBtnStatus] = useState('');
+
+  const [answerInput, setAnswerInput] = useState('');
+
+  const [answerFeedback, setAnswerFeedback] = useState('');
+
   const flipCard = () => {
     setFlipFlashcard(!isFlipped);
   }
+
   const getNextQuestion = () => {
-    setQuestionNum(Math.floor(Math.random() * cardData.length));
+    // only go to next question if another question exists
+    if(questionNum != cardData.length - 1) {
+      setQuestionNum(questionNum + 1);
+      setRightBtnStatus('');
+      setLeftBtnStatus('');
+      setAnswerFeedback('');
+    }
+    else {
+      setRightBtnStatus('fade');
+    }
     setFlipFlashcard(false);
   }
+
+  const getPrevQuestion = () => {
+    if(questionNum != 0) {
+      setQuestionNum(questionNum - 1);
+      setLeftBtnStatus('');
+      setRightBtnStatus('');
+      setAnswerFeedback('');
+    }
+    else {
+      setLeftBtnStatus("fade");
+    }
+    setFlipFlashcard(false);
+  }
+
+  const shuffleCards = () => {
+    // shuffle the array cardData
+    for(let i = cardData.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i+1));
+      [cardData[i], cardData[j]] = [cardData[j], cardData[i]];
+      console.log(cardData[i]);
+    }
+
+    setFlipFlashcard(false);
+    setLeftBtnStatus('');
+    setRightBtnStatus('');
+    setAnswerFeedback('');
+
+  }
+
+  const onCheckAnswer = () => {
+    // remove anything with parentheses including the parentheses itself
+    let cardDataNoParentheses = cardData[questionNum].answer.replace(/ *\([^)]*\ *\)/g, "");
+
+    //only check answer if you are not looking at the solution
+    if(!isFlipped) {
+      // answer does not need to match lower or uppercase to be correct
+      if(cardData[questionNum].answer.toLocaleLowerCase() == answerInput.toLocaleLowerCase()) {
+        setAnswerFeedback("correct")
+        setCurrentStreak(currentStreak + 1);
+        if(currentStreak >= longestStreak) {
+          setLongestStreak(longestStreak + 1);
+        }
+      }
+      // answer does not need to include anything inside parentheses to be correct
+      else if(cardDataNoParentheses.toLocaleLowerCase() == answerInput.toLocaleLowerCase()) {
+        setAnswerFeedback("correct")
+        setCurrentStreak(currentStreak + 1);
+        if(currentStreak >= longestStreak) {
+          setLongestStreak(longestStreak + 1);
+        }
+      }
+      else {
+        setAnswerFeedback("incorrect");
+        setCurrentStreak(0);
+      }
+    } 
+    else {
+      setAnswerFeedback("You can only answer a question before you flip it");
+    }
+    
+}
   
 
   return (
@@ -22,8 +103,21 @@ const App = () => {
         <h2>Test your Tagalog</h2>
         <h3>Test your knowledge by guessing some common Tagalog words and phrases</h3>
         <h5>Number of cards: {cardData.length}</h5>
+        <h5>Current Streak: {currentStreak}, Longest Streak: {longestStreak}</h5>
         <Flashcard isFlipped = {isFlipped} flipCard={flipCard} cardData={cardData[questionNum]}/>
-        <button className='button' onClick={getNextQuestion}>→</button>
+        <AnswerForm 
+          currentVal={answerInput} 
+          handleChange={(e) => setAnswerInput(e.target.value)}
+          answerFeedback={answerFeedback}
+          onCheckAnswer={onCheckAnswer}
+        />
+        
+        <div className='button-row'>
+          <button id={leftBtnStatus} className='button' onClick={getPrevQuestion}>←</button>
+          <button id={rightBtnStatus} className='button' onClick={getNextQuestion}>→</button>
+          <button className="button" onClick={shuffleCards}>Shuffle Cards</button>
+        </div>
+        
       </div>
     </div>
   )
